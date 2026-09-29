@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geolocation MapTiler Interaktif</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; line-height: 1.6; }
+        .container { max-width: 500px; }
+        .search-box { margin-bottom: 20px; }
+        input[type="text"] { padding: 8px; width: 70%; }
+        button { padding: 8px 15px; cursor: pointer; }
+        .data-box { background: #f4f4f4; padding: 15px; border-radius: 5px; display: none; }
+        .error { color: red; font-weight: bold; }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h3>Nama : Haffi Saifulloh </h3>
+        <h3>NIM : 20240140181</h3>
+        <hr>
+
+        <h4>Cari Data Wilayah </h4>
+        <div class="search-box">
+            <input type="text" id="inputLokasi" placeholder="Masukkan nama kecamatan/kota/provinsi...">
+            <button onclick="cariData()">Cari</button>
+        </div>
+
+        <p id="statusMsg" class="error"></p>
+
+        
+        <div class="data-box" id="hasilData">
+            <p><strong>Lokasi Dicari:</strong> <span id="lokasi"></span></p>
+            <p><strong>Negara:</strong> <span id="negara"></span></p>
+            <p><strong>Provinsi:</strong> <span id="provinsi"></span></p>
+            <p><strong>Kecamatan:</strong> <span id="kecamatan"></span></p>
+            <p><strong>Longitude:</strong> <span id="longitude"></span></p>
+            <p><strong>Latitude:</strong> <span id="latitude"></span></p>
+            
+    </div>
+
+    <script>
+        function cariData() {
+            const query = document.getElementById("inputLokasi").value;
+            const statusMsg = document.getElementById("statusMsg");
+            const hasilData = document.getElementById("hasilData");
+
+            if (!query) {
+                statusMsg.innerHTML = "Harap masukkan nama lokasi!";
+                return;
+            }
+
+            statusMsg.innerHTML = "Mencari data...";
+            statusMsg.style.color = "blue";
+            hasilData.style.display = "none";
+
+            
+            fetch(`/api/lokasi?search=${encodeURIComponent(query)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message) {
+                        statusMsg.innerHTML = data.message;
+                        statusMsg.style.color = "red";
+                        return;
+                    }
+
+                    
+                    statusMsg.innerHTML = "";
+                    hasilData.style.display = "block";
+
+                    
+                    document.getElementById("lokasi").innerHTML = data.lokasi;
+                    document.getElementById("negara").innerHTML = data.negara;
+                    document.getElementById("provinsi").innerHTML = data.provinsi;
+                    document.getElementById("kecamatan").innerHTML = data.kecamatan;
+                    document.getElementById("longitude").innerHTML = data.longitude;
+                    document.getElementById("latitude").innerHTML = data.latitude;
+                    
+                })
+                .catch(error => {
+                    console.error(error);
+                    statusMsg.innerHTML = "Terjadi kesalahan saat menghubungi server.";
+                    statusMsg.style.color = "red";
+                });
+        }
+    </script>
+</body>
+</html>
