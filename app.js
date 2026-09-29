@@ -29,8 +29,8 @@ app.get("/api/lokasi", async (req, res) => {
         const feature = data.features[0];
         
     
-        const longitude = coordinates[0];
-        const latitude = coordinates[1];
+        const longitude = feature.geometry.coordinates[0];
+        const latitude = feature.geometry.coordinates[1];
 
        
         let negara = "-";
