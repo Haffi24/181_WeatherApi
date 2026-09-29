@@ -4,55 +4,242 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Geolocation MapTiler Interaktif</title>
+    
+   
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
-        body { font-family: Arial, sans-serif; padding: 20px; line-height: 1.6; }
-        .container { max-width: 500px; }
-        .search-box { margin-bottom: 20px; }
-        input[type="text"] { padding: 8px; width: 70%; }
-        button { padding: 8px 15px; cursor: pointer; }
-        .data-box { background: #f4f4f4; padding: 15px; border-radius: 5px; display: none; }
-        .error { color: red; font-weight: bold; }
+        
+        :root {
+            --primary: #4F46E5;
+            --primary-hover: #4338CA;
+            --bg-gradient: linear-gradient(135deg, #EEF2FF 0%, #C7D2FE 100%);
+            --text-main: #1F2937;
+            --text-muted: #6B7280;
+            --card-bg: #FFFFFF;
+        }
+
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: var(--text-main);
+        }
+
+        
+        .container { 
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 500px; 
+            padding: 30px; 
+            border-radius: 16px; 
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        }
+
+       
+        .profile-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .profile-header h3 { font-size: 15px; font-weight: 500; color: var(--text-muted); margin-bottom: 5px; }
+        .profile-header h3 strong { color: var(--primary); font-weight: 600; }
+        hr { border: 0; height: 1px; background: #E5E7EB; margin: 20px 0; }
+
+        h4 { text-align: center; margin-bottom: 15px; font-size: 18px; color: var(--text-main); }
+
+       
+        .search-box { 
+            display: flex; 
+            gap: 10px; 
+            margin-bottom: 15px; 
+        }
+        input[type="text"] { 
+            flex: 1;
+            padding: 12px 15px; 
+            border: 2px solid #E5E7EB;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        input[type="text"]:focus { border-color: var(--primary); }
+        
+        button { 
+            padding: 12px 20px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        button:hover { background-color: var(--primary-hover); }
+
+        
+        #statusMsg { text-align: center; font-size: 13px; margin-bottom: 15px; min-height: 20px; }
+        .error { color: #EF4444; font-weight: 500; }
+        .loading { color: var(--primary); font-weight: 500; }
+
+        
+        .data-box { 
+            background: #F9FAFB; 
+            border: 1px solid #E5E7EB;
+            padding: 15px 20px; 
+            border-radius: 12px; 
+            display: none; 
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        
+        .data-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #E5E7EB;
+        }
+        .data-item:last-child { border-bottom: none; padding-bottom: 0; }
+        
+        .item-icon {
+            width: 38px;
+            height: 38px;
+            background: #E0E7FF;
+            color: var(--primary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 16px;
+        }
+
+        .item-content { flex: 1; }
+        .item-label { font-size: 12px; color: var(--text-muted); margin-bottom: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .item-value { font-size: 14px; font-weight: 600; color: var(--text-main); word-break: break-word; }
+
     </style>
 </head>
 
 <body>
     <div class="container">
-        <h3>Nama : Haffi Saifulloh </h3>
-        <h3>NIM : 20240140181</h3>
+        
+      
+        <div class="profile-header">
+            <h3>Nama: <strong>Haffi Saifulloh</strong></h3>
+            <h3>NIM: <strong>20240140181</strong></h3>
+        </div>
         <hr>
 
-        <h4>Cari Data Wilayah </h4>
+        <h4>Cari Data Wilayah Terkini</h4>
+        
+        
         <div class="search-box">
-            <input type="text" id="inputLokasi" placeholder="Masukkan nama kecamatan/kota/provinsi...">
-            <button onclick="cariData()">Cari</button>
+            <input type="text" id="inputLokasi" placeholder="Contoh: Yogyakarta, Jakarta...">
+            <button onclick="cariData()">
+                <i class="fas fa-search"></i> Cari
+            </button>
         </div>
 
-        <p id="statusMsg" class="error"></p>
+        <p id="statusMsg"></p>
 
-        
+       
         <div class="data-box" id="hasilData">
-            <p><strong>Lokasi Dicari:</strong> <span id="lokasi"></span></p>
-            <p><strong>Negara:</strong> <span id="negara"></span></p>
-            <p><strong>Provinsi:</strong> <span id="provinsi"></span></p>
-            <p><strong>Kecamatan:</strong> <span id="kecamatan"></span></p>
-            <p><strong>Longitude:</strong> <span id="longitude"></span></p>
-            <p><strong>Latitude:</strong> <span id="latitude"></span></p>
             
+            <div class="data-item">
+                <div class="item-icon"><i class="fas fa-map-marker-alt"></i></div>
+                <div class="item-content">
+                    <div class="item-label">Lokasi Dicari</div>
+                    <div class="item-value" id="lokasi">-</div>
+                </div>
+            </div>
+
+            <div class="data-item">
+                <div class="item-icon"><i class="fas fa-globe-asia"></i></div>
+                <div class="item-content">
+                    <div class="item-label">Negara</div>
+                    <div class="item-value" id="negara">-</div>
+                </div>
+            </div>
+
+            <div class="data-item">
+                <div class="item-icon"><i class="fas fa-map"></i></div>
+                <div class="item-content">
+                    <div class="item-label">Provinsi</div>
+                    <div class="item-value" id="provinsi">-</div>
+                </div>
+            </div>
+
+            <div class="data-item">
+                <div class="item-icon"><i class="fas fa-city"></i></div>
+                <div class="item-content">
+                    <div class="item-label">Kecamatan / Kabupaten</div>
+                    <div class="item-value" id="kecamatan">-</div>
+                </div>
+            </div>
+
+            <div class="data-item">
+                <div class="item-icon"><i class="fas fa-arrows-alt-h"></i></div>
+                <div class="item-content">
+                    <div class="item-label">Longitude (X)</div>
+                    <div class="item-value" id="longitude">-</div>
+                </div>
+            </div>
+
+            <div class="data-item">
+                <div class="item-icon"><i class="fas fa-arrows-alt-v"></i></div>
+                <div class="item-content">
+                    <div class="item-label">Latitude (Y)</div>
+                    <div class="item-value" id="latitude">-</div>
+                </div>
+            </div>
+
+        </div>
     </div>
 
     <script>
+        
+        document.getElementById("inputLokasi").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                cariData();
+            }
+        });
+
         function cariData() {
             const query = document.getElementById("inputLokasi").value;
             const statusMsg = document.getElementById("statusMsg");
             const hasilData = document.getElementById("hasilData");
 
             if (!query) {
-                statusMsg.innerHTML = "Harap masukkan nama lokasi!";
+                statusMsg.innerHTML = "<i class='fas fa-exclamation-circle'></i> Harap masukkan nama lokasi!";
+                statusMsg.className = "error";
                 return;
             }
 
-            statusMsg.innerHTML = "Mencari data...";
-            statusMsg.style.color = "blue";
+           
+            statusMsg.innerHTML = "<i class='fas fa-spinner fa-spin'></i> Mencari data ke server...";
+            statusMsg.className = "loading";
             hasilData.style.display = "none";
 
             
@@ -60,28 +247,26 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.message) {
-                        statusMsg.innerHTML = data.message;
-                        statusMsg.style.color = "red";
+                        statusMsg.innerHTML = `<i class='fas fa-exclamation-triangle'></i> ${data.message}`;
+                        statusMsg.className = "error";
                         return;
                     }
-
                     
                     statusMsg.innerHTML = "";
                     hasilData.style.display = "block";
 
                     
-                    document.getElementById("lokasi").innerHTML = data.lokasi;
-                    document.getElementById("negara").innerHTML = data.negara;
-                    document.getElementById("provinsi").innerHTML = data.provinsi;
-                    document.getElementById("kecamatan").innerHTML = data.kecamatan;
-                    document.getElementById("longitude").innerHTML = data.longitude;
-                    document.getElementById("latitude").innerHTML = data.latitude;
-                    
+                    document.getElementById("lokasi").innerHTML = data.lokasi || "-";
+                    document.getElementById("negara").innerHTML = data.negara || "-";
+                    document.getElementById("provinsi").innerHTML = data.provinsi || "-";
+                    document.getElementById("kecamatan").innerHTML = data.kecamatan || "-";
+                    document.getElementById("longitude").innerHTML = data.longitude || "-";
+                    document.getElementById("latitude").innerHTML = data.latitude || "-";
                 })
                 .catch(error => {
                     console.error(error);
-                    statusMsg.innerHTML = "Terjadi kesalahan saat menghubungi server.";
-                    statusMsg.style.color = "red";
+                    statusMsg.innerHTML = "<i class='fas fa-wifi'></i> Terjadi kesalahan saat menghubungi server.";
+                    statusMsg.className = "error";
                 });
         }
     </script>
